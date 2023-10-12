@@ -19,6 +19,7 @@ const fillCards = function (data) {
     if (index < data.photos.length) {
       photo = data.photos[index];
       const cardBody = img.parentElement;
+      const cardTitle = cardBody.querySelector(".card-title");
 
       img.src = photo.src.landscape;
 
@@ -30,8 +31,32 @@ const fillCards = function (data) {
         cardBody.querySelector(".card-subtitle")
       );
 
-      applyTitle(photo.alt, cardBody.querySelector(".card-title"), photo.src);
+      applyTitle(photo.alt, cardTitle, photo.src);
+
+      viewBtnClick(cardBody, photo.src, cardTitle);
+
+      detailRedirect(cardTitle, img, photo);
     }
+  });
+};
+
+const detailRedirect = function (cardTitle, cardImg, photoData) {
+  const photoSrc = photoData.src.original;
+  const photoTitle = photoData.alt;
+  const photoAuthor = photoData.photographer;
+  const photoAuthorId = photoData.photographer_id;
+  const photoAuthorUrl = photoData.photographer_url;
+  const imgAvgColor = photoData.avg_color.replace("#", "");
+  console.log(imgAvgColor);
+  cardTitle.addEventListener("click", () => {
+    location.assign(
+      `./detail.html?photoSrc=${photoSrc}&photoTitle=${photoTitle}&photoAuthor=${photoAuthor}&photoAuthorId=${photoAuthorId}&photoAuthorUrl=${photoAuthorUrl}&avgColor=${imgAvgColor}`
+    );
+  });
+  cardImg.addEventListener("click", () => {
+    location.assign(
+      `./detail.html?photoSrc=${photoSrc}&photoTitle=${photoTitle}&photoAuthor=${photoAuthor}&photoAuthorId=${photoAuthorId}&photoAuthorUrl=${photoAuthorUrl}&avgColor=${imgAvgColor}`
+    );
   });
 };
 
@@ -45,7 +70,15 @@ const applyAuthor = function (photographer, photographerId, cardSub) {
 
 const applyTitle = function (title, cardTitle, img) {
   cardTitle.textContent = title;
-  cardTitle.addEventListener("click", () => {
+  //   viewBtnClick(img, title);
+  //   cardTitle.addEventListener("click", () => {
+  //     openImageInModal(img);
+  //   });
+};
+
+const viewBtnClick = function (card, img, title) {
+  const viewButton = card.querySelector(".viewBtn");
+  viewButton.addEventListener("click", () => {
     openImageInModal(img, title);
   });
 };
@@ -55,8 +88,9 @@ const openImageInModal = function (img, title) {
   const modal = document.querySelector(".modal");
   const modalBody = modal.querySelector(".modal-body");
   const modalTitle = modal.querySelector(".modal-title");
+  console.log(modalTitle);
   modalBody.innerHTML = `<img class="img-fluid" src="${img.original}"></img>`;
-  modalTitle.textContent = title;
+  modalTitle.textContent = title.textContent;
 };
 
 const searchAndLoad = function () {
